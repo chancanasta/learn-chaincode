@@ -42,7 +42,10 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
-	err := stub.PutState("hello_world", []byte(args[0]))
+	var retVal string
+	retVal="hello_world"
+	err := stub.PutState(retVal, []byte(args[0]))
+	fmt.Println("****************Init - "+retVal)
 	if err != nil {
 		return nil,err
 	}
@@ -108,7 +111,7 @@ func (t *SimpleChaincode) read(stub *shim.ChaincodeStub,args []string) ([]byte, 
 		return nil,errors.New("Expected 1 argument, name of var to read")
 	}
 	name = args[0]
-
+	fmt.Println("*********** In read, reading"+name)
 	valAsbytes, err :=stub.GetState(name)
 	if err!=nil {
 		jsonResp = "{\"Error\":\"Failed to get state for "+name+"\"}"
