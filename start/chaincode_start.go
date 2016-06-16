@@ -43,11 +43,12 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
 	var retVal string
-	retVal="hello_world"
+	retVal = "rubbish_test"
+
 	err := stub.PutState(retVal, []byte(args[0]))
-	fmt.Println("****************Init - "+retVal)
+	fmt.Println("****************Init - " + retVal)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	return nil, nil
@@ -58,64 +59,62 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	fmt.Println("invoke is running " + function)
 
 	// Handle different functions
-	if function == "init" {													//initialize the chaincode state, used as reset
+	if function == "init" { //initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
 	} else if function == "write" {
-		return t.write(stub,args)
+		return t.write(stub, args)
 	}
-	fmt.Println("invoke did not find func: " + function)					//error
+	fmt.Println("invoke did not find func: " + function) //error
 
 	return nil, errors.New("Received unknown function invocation")
 }
 
-func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string)([]byte,error){
-	var name,value string
+func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	var name, value string
 	var err error
 	fmt.Println("Running write")
 
-	if len(args)!=2 {
-		return nil,errors.New("Expecting 2 arguments, name and value")
+	if len(args) != 2 {
+		return nil, errors.New("Expecting 2 arguments, name and value")
 	}
 
-	name=args[0];
-	value=args[1];
-	err=stub.PutState(name,[]byte(value))
-	if err!=nil{
-		return nil,err
+	name = args[0]
+	value = args[1]
+	err = stub.PutState(name, []byte(value))
+	if err != nil {
+		return nil, err
 	}
-	return nil,nil
+	return nil, nil
 }
 
 // Query is our entry point for queries
 func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 
-
 	fmt.Println("query is running " + function)
 
 	// Handle different functions
-	if function == "read" {											//read a variable
-		return t.read(stub,args)
+	if function == "read" { //read a variable
+		return t.read(stub, args)
 	}
 
-
-	fmt.Println("query did not find func: " + function)						//error
+	fmt.Println("query did not find func: " + function) //error
 
 	return nil, errors.New("Received unknown function query")
 }
 
-func (t *SimpleChaincode) read(stub *shim.ChaincodeStub,args []string) ([]byte, error) {
-	var name,jsonResp string
+func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	var name, jsonResp string
 	var err error
-fmt.Println("*********** In read, reading"+name)
-	if len(args)!=1 {
-		return nil,errors.New("Expected 1 argument, name of var to read")
+	fmt.Println("*********** In read, reading" + name)
+	if len(args) != 1 {
+		return nil, errors.New("Expected 1 argument, name of var to read")
 	}
 	name = args[0]
-	fmt.Println("*********** In read, reading"+name)
-	valAsbytes, err :=stub.GetState(name)
-	if err!=nil {
-		jsonResp = "{\"Error\":\"Failed to get state for "+name+"\"}"
-		return nil,errors.New(jsonResp)
+	fmt.Println("*********** In read, reading" + name)
+	valAsbytes, err := stub.GetState(name)
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + name + "\"}"
+		return nil, errors.New(jsonResp)
 	}
-	return valAsbytes,nil
+	return valAsbytes, nil
 }
