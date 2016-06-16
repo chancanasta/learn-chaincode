@@ -43,7 +43,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
 	var retVal string
-	retVal = "rubbish_test"
+	retVal = "rubbish_rubbish"
 
 	err := stub.PutState(retVal, []byte(args[0]))
 	fmt.Println("****************Init - " + retVal)
